@@ -1,0 +1,29 @@
+version: '3.7'
+services:
+  web: 
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    depends_on:
+      - app
+    ports:
+      - 8080:80
+    environment:
+      APP_SERVER: http://app:80
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    environment:
+      REDIS_HOST: db
+      REDIS_PORT: 6379
+      REDIS_DB: 0
+  db:
+    image: redis:5.0.6-alpine3.10
+    volumes:
+      - c5kvs_redis_volume:/data
+volumes:
+  c5kvs_redis_volume:
+    driver: local
