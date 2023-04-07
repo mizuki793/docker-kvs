@@ -1,4 +1,5 @@
 From python:3.7.5-slim
+ENV COMPOSE_HTTP_TIMEOUT 120
 RUN pip install pytest==5.2.0 requests==2.22.0
 WORKDIR /src
 COPY ./src/test_app.py /src/test_app.py
