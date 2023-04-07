@@ -1,4 +1,5 @@
 From python:3.7.5-slim
+ENV COMPOSE_HTTP_TIMEOUT 120
 RUN pip install pytest==5.2.0 requests==2.22.0 selenium==3.141.0
 RUN mkdir /images
 WORKDIR /src

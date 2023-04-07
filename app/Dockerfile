@@ -1,4 +1,5 @@
 From python:3.7.5-slim
+ENV COMPOSE_HTTP_TIMEOUT 120
 RUN pip install flask==2.2.2 redis==3.3.8
 WORKDIR /src
 COPY ./src/server.py /src
