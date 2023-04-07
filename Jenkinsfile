@@ -3,9 +3,11 @@ pipeline {
   environment {
     DOCKERHUB_USER = "fallakiakino"
     BUILD_HOST = "root@192.168.2.125"
-    PROD_HOST = "root@1192.168.2.126"
-    BUILD_TIMESTAMP = sh(script:"date +%Y%m%d-%H%M%S", returnStdout: true).trim()
-    stage('Pre Check'){
+    PROD_HOST = "root@192.168.2.126"
+    BUILD_TIMESTAMP = sh(script: "date +%Y%m%d-%H%M%S", returnStdout: true).trim()
+  }
+  stages {
+    stage('Pre Check') {
       steps {
         sh "test -f ~/.docker/config.json"
         sh "cat ~/.docker/config.json | grep docker.io"
@@ -23,9 +25,9 @@ pipeline {
     }
     stage('Test') {
       steps {
-        sh "docker -H ssh://${BUILD_HOST} exec dockerkvs_apptest pytest -v test_app.py"
-        sh "docker -H ssh://${BUILD_HOST} exec dockerkvs_webtest pytest -v test_static.py"
-        sh "docker -H ssh://${BUILD_HOST} exec dockerkvs_webtest pytest -v test_selenium.py"
+        sh "docker -H ssh://${BUILD_HOST} container exec dockerkvs_apptest pytest -v test_app.py"
+        sh "docker -H ssh://${BUILD_HOST} container exec dockerkvs_webtest pytest -v test_static.py"
+        sh "docker -H ssh://${BUILD_HOST} container exec dockerkvs_webtest pytest -v test_selenium.py"
         sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml down"
       }
     }
