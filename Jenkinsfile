@@ -5,6 +5,7 @@ pipeline {
     BUILD_HOST = "root@192.168.2.125"
     PROD_HOST = "root@192.168.2.126"
     BUILD_TIMESTAMP = sh(script: "date +%Y%m%d-%H%M%S", returnStdout: true).trim()
+    COMPOSE_HTTP_TIMEOUT="COMPOSE_HTTP_TIMEOUT=400"
   }
   stages {
     stage('Pre Check') {
@@ -18,9 +19,9 @@ pipeline {
         sh "cat docker-compose.build.yml"
         sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml down"
         sh "docker -H ssh://${BUILD_HOST} volume prune -f"
-        sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml build"
-        sh "COMPOSE_HTTP_TIMEOUT=200 docker-compose -H ssh://${ BUILD_HOST } -f docker-compose.build.yml up -d "
-        sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml ps"
+        sh "${COMPOSE_HTTP_TIMEOUT} docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml build"
+        sh "${COMPOSE_HTTP_TIMEOUT} docker-compose -H ssh://${ BUILD_HOST } -f docker-compose.build.yml up -d "
+        sh "${COMPOSE_HTTP_TIMEOUT} docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml ps"
       }
     }
     stage('Test') {
@@ -45,8 +46,8 @@ pipeline {
         sh "echo 'DOCKERHUB_USER=${DOCKERHUB_USER}' > .env"
         sh "echo 'BUILD_TIMESTAMP=${BUILD_TIMESTAMP}' >> .env"
         sh "cat .env"
-        sh "COMPOSE_HTTP_TIMEOUT=400 docker-compose -H ssh://${PROD_HOST} -f docker-compose.prod.yml up -d"
-        sh "COMPOSE_HTTP_TIMEOUT=400 docker-compose -H ssh://${PROD_HOST} -f docker-compose.prod.yml ps"
+        sh "${COMPOSE_HTTP_TIMEOUT} docker-compose -H ssh://${PROD_HOST} -f docker-compose.prod.yml up -d"
+        sh "${COMPOSE_HTTP_TIMEOUT} docker-compose -H ssh://${PROD_HOST} -f docker-compose.prod.yml ps"
       }
     }
   }
