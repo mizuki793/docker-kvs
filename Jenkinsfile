@@ -19,7 +19,7 @@ pipeline {
         sh "COMPOSE_HTTP_TIMEOUT=400 docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml down"
         sh "docker -H ssh://${BUILD_HOST} volume prune -f"
         sh "COMPOSE_HTTP_TIMEOUT=400 docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml build"
-        sh "COMPOSE_HTTP_TIMEOUT=400 docker-compose -H ssh://${ BUILD_HOST } -f docker-compose.build.yml up -d "
+        sh "COMPOSE_HTTP_TIMEOUT=600 docker-compose -H ssh://${ BUILD_HOST } -f docker-compose.build.yml up -d "
         sh "COMPOSE_HTTP_TIMEOUT=400 docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml ps"
       }
     }
