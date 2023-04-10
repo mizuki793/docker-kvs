@@ -45,7 +45,7 @@ pipeline {
         sh "echo 'DOCKERHUB_USER=${DOCKERHUB_USER}' > .env"
         sh "echo 'BUILD_TIMESTAMP=${BUILD_TIMESTAMP}' >> .env"
         sh "cat .env"
-        sh "COMPOSE_HTTP_TIMEOUT=200 docker-compose -H ssh://${PROD_HOST} -f docker-compose.prod.yml up -d"
+        sh "COMPOSE_HTTP_TIMEOUT=400 docker-compose -H ssh://${PROD_HOST} -f docker-compose.prod.yml up -d"
         sh "COMPOSE_HTTP_TIMEOUT=400 docker-compose -H ssh://${PROD_HOST} -f docker-compose.prod.yml ps"
       }
     }
